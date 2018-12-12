@@ -21,7 +21,7 @@ preferrably somewhere where the first pin on the ATmega1284 lines up with the 11
 a power source on the right side of the breadboard near the top. This will be powering most of the hardware on the board. Then, place 
 wires from pin B0 to pin B6 (pins 1 to 7) on the ATmega1284 (the pins starting from the top left and down to the 7th port) and put the other end of those
 wires on the right side of the breadboard, below your power source. These wires are going to connect to some LEDs that will measure how
-much pressure is placed.
+much pressure is placed. Also, connect ports 11 and 31 to ground, ports 10 and 30 to VCC, and port 32 to ground. 
 
   Once all the wires are placed, connect resistors to each one of those wires and put them to nodes with empty rows. Then, in that same row,
 connect LEDs to each resistor and ground them. The long end of the LED should be in parallel to the resistor, while the short end of the 
@@ -45,3 +45,17 @@ connect to the Bluetooth chip that you just plugged in. Assuming no other Blueto
 chip, labelled "HC 05". If it asks for a password of some sort, enter the default pin, which should be 1234, 12345, 0000, or some other 
 basic number. 
 with your Bluetooth module that you just plugged in. 
+
+Now, connect a wire from port C0 (pin 22) to a node with empty rows, and connect a resistor and LED in series with the wire, just like 
+you did with the previous LEDs. You will need to write some code that turns the LED on and OFF using the buttons on your Bluetooth 
+terminal. On your terminal (or at least mine), set your buttons to send HEX values, such as 0x00 or 0x01. Due to trust issues, I will 
+not post the code here, but I will say that I used USART in my program. Eventually, after tweaking with the code, you will able to 
+make the LED turn on and off by sending different hex values through your phone. 
+
+Next, we will wire up our force-sensing resistor. Plug your force-sensing resistor on the left side of the breadboard, toward the top. 
+Place some tape on the back of it and tape it against a small box for stability. This will come into play later. Once plugged in, connect
+a wire from one of the 2 ports into A0 (port 40), and plug in a 10K ohm resistor in the same row and connect that to ground.
+Connect the other port that is unused into VCC (5V). Once done, write some code that takes the values that the force-sensor resistor 
+reads and have it output HEX values onto port B. This is where the LEDs connected earlier come to play; they show the range of the 
+pressure and should light it based on the readings that the force-sensing resistor gets. Your goal is to put pressure on the force-
+sensing resistor and having the LEDs light up sequentially as you apply more pressure. 
