@@ -59,3 +59,30 @@ Connect the other port that is unused into VCC (5V). Once done, write some code 
 reads and have it output HEX values onto port B. This is where the LEDs connected earlier come to play; they show the range of the 
 pressure and should light it based on the readings that the force-sensing resistor gets. Your goal is to put pressure on the force-
 sensing resistor and having the LEDs light up sequentially as you apply more pressure. 
+
+Almost done! You have now finished the force-sensing resistor and the Bluetooth chip. Lastly, connect your 12V power source to the 
+breadboard, preferrably on the bottom left side. 
+
+******** YOU MUST MAKE SURE THAT THE 12V POWER SOURCE AND THE 5V POWER SOURCE ARE NOT EVER POWERING THE SAME VCC. DO NOT HAVE ALL 
+THE VCC PORTS CONNECTED TO EACH OTHER. SEPARATE IT SO THE 12V ONLY POWERS THE SOLENOID, AND THE 5V POWERS EVERYTHING ELSE.*********
+
+Read the above warning if you haven't done so (they can still have common ground). For my project, I simply used a modified power
+source regulator, but you can also use a step-down voltage source if you have one. Anyway, plug in your transistor somewhere near your 
+12V power source. Have the side with the black part facing away from the board, just as the force sensing resistor did. 
+Connect two wires into the 2 ports that the Solenoid lock has attached at the end of its blue and red wire. With the wire that's plugged
+into the the port on the red side (this will be voltage), connect that to your power source with VCC, and plug the wire that's connected 
+to the blue part to the middle port of the transistor (this is the ground). Place a wire on the same row with the bottom row of the
+transistor, and connect the other side of that wire to ground. Remember where that LED was with the Bluetooth module? Remove that 
+LED and connect that resistor to the top side of the transistor. Now all your hardware is complete. Assuming that you coded it correctly
+also, your whole project should be complete. It's time for the result!
+
+
+
+Make a makeshift chain with some cables and attach them to your solenoid lock. Find a wheel or spoke near you, and have the cables 
+wrap around the spoke to the chains of your bicycle. Turn on both of your power sources; your 12V power source should be connected to an
+outlet. Hold your solenoid lock a few centimeters away from your force-sensing resistor. Grab your phone and on the bluetooth terminal,
+press the button that you use to unlock your phone. Your solenoid lock should unlock, and after a few seconds it should retract back into
+the force sensing resistor. In turn, your resistor should detect this pressure and have the LEDs light up, depending on what your range
+is. When you hit the button to unlock on your phone, the Solenoid should retract, and your bike should be free to move. When you want
+to lock it, hit the LOCK button and the Solenoid should keep the chain in place, preventing one from riding the bike. You're done! 
+Have fun with your remote bike lock! (Remember, it's only a prototype and you can build from it!)
