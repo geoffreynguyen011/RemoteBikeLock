@@ -19,13 +19,13 @@ This is a DIY project on how to make a remote bike lock. You will need a few thi
   After you have all these parts, you are ready to make your remote bike lock. First, place your ATmega1284 on your breadboard,
 preferrably somewhere where the first pin on the ATmega1284 lines up with the 11th or 21st spot on your breadboard. After doing so, place
 a power source on the right side of the breadboard near the top. This will be powering most of the hardware on the board. Then, place 
-wires from pin B0 to pin B6 (pins 1 to 7) on the ATmega1284 (the pins starting from the top left and down to the 7th port) and put the other end of those
-wires on the right side of the breadboard, below your power source. These wires are going to connect to some LEDs that will measure how
-much pressure is placed. Also, connect ports 11 and 31 to ground, ports 10 and 30 to VCC, and port 32 to ground. 
+wires from pin B0 to pin B6 (pins 1 to 7) on the ATmega1284 (the pins starting from the top left and down to the 7th port) and put the 
+other end of thosewires on the right side of the breadboard, below your power source. These wires are going to connect to some LEDs that
+will measure how much pressure is placed. Also, connect ports 11 and 31 to ground, ports 10 and 30 to VCC, and port 32 to ground. 
 
-  Once all the wires are placed, connect resistors to each one of those wires and put them to nodes with empty rows. Then, in that same row,
-connect LEDs to each resistor and ground them. The long end of the LED should be in parallel to the resistor, while the short end of the 
-LED connects to ground. Now you have set up all your LEDs. 
+  Once all the wires are placed, connect resistors to each one of those wires and put them to nodes with empty rows. Then, in that same
+row,connect LEDs to each resistor and ground them. The long end of the LED should be in parallel to the resistor, while the short end of
+the LED connects to ground. Now you have set up all your LEDs. 
 
   The next step is to connect your Bluetooth HC 05 chip on your breadboard. Place this on the left side of the breadboard, preferrably 
 in the middle. Have the side with the labels that say EN, VCC, GND, etc. facing away fron the microcontroller. Now, assuming that
