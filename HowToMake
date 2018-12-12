@@ -1,0 +1,47 @@
+// CS 122A Fall 2018 Remote Bike Lock Project by Geoffrey Nguyen. Edited December 2018. 
+
+This is a DIY project on how to make a remote bike lock. You will need a few things:
+
+- ATmega1284
+- Power source, 5V and 12V
+- Adafruit square force-sensing resistor
+- Bluetooth Chip HC 05
+- TIP102 Transistor
+- 12V Solenoid Lock
+- Wires, LEDs, Resistors
+- WB-106 Breadboard
+- Atmel-ICE
+- Atmel-ICE Cable
+- USB A Male-to-Male Cable
+- Small box and tape
+- Smartphone, with a Bluetooth terminal installed/
+
+  After you have all these parts, you are ready to make your remote bike lock. First, place your ATmega1284 on your breadboard,
+preferrably somewhere where the first pin on the ATmega1284 lines up with the 11th or 21st spot on your breadboard. After doing so, place
+a power source on the right side of the breadboard near the top. This will be powering most of the hardware on the board. Then, place 
+wires from pin B0 to pin B6 (pins 1 to 7) on the ATmega1284 (the pins starting from the top left and down to the 7th port) and put the other end of those
+wires on the right side of the breadboard, below your power source. These wires are going to connect to some LEDs that will measure how
+much pressure is placed.
+
+  Once all the wires are placed, connect resistors to each one of those wires and put them to nodes with empty rows. Then, in that same row,
+connect LEDs to each resistor and ground them. The long end of the LED should be in parallel to the resistor, while the short end of the 
+LED connects to ground. Now you have set up all your LEDs. 
+
+  The next step is to connect your Bluetooth HC 05 chip on your breadboard. Place this on the left side of the breadboard, preferrably 
+in the middle. Have the side with the labels that say EN, VCC, GND, etc. facing away fron the microcontroller. Now, assuming that
+you have the 6 ports that the Bluetooth chip comes with, wire your circuit exactly as described:
+
+- Top node (EN) leave empty. 
+- Second from the top (VCC) connect to 5V.
+- Third from the top (GND) connect to ground. 
+- Fourth from the top (TXD) connect to pin 14 on the microcontroller. On the microcontroller, this should be the RXD0 pin. 
+- Fifth from the top (RXD) connecto to pin 15 on the microcontroller. On the microcontroller, this should be the TXD0 pin.
+- Sixth from the bottom (STATE) leave empty.
+
+Turn on your power supply, and open up the Bluetooth terminal on your phone. On your board, you should be seeing your Bluetooth chip 
+blinking on and off. If it isn't, then either your power is off, your chip may be damaged, or you may have JTAG turned on your Atmel
+studio. Hopefully, you are able to fix and resolve this issue in some way. After, turn on the Bluetooth function on your phone, and
+connect to the Bluetooth chip that you just plugged in. Assuming no other Bluetooth devices are around, you should be able to see your 
+chip, labelled "HC 05". If it asks for a password of some sort, enter the default pin, which should be 1234, 12345, 0000, or some other 
+basic number. 
+with your Bluetooth module that you just plugged in. 
