@@ -1,0 +1,274 @@
+#include <stdint.h> 
+#include <stdlib.h> 
+#include <stdio.h> 
+#include <stdbool.h> 
+#include <string.h> 
+#include <math.h> 
+#include <avr/io.h> 
+#include <avr/interrupt.h> 
+#include <avr/eeprom.h> 
+#include <avr/portpins.h> 
+#include <avr/pgmspace.h> 
+//#include <avr/util.h>
+ 
+unsigned char receive; 
+unsigned int force = 0;
+int counts = 0;
+//unsigned int Speaker_value = 0;
+ 
+//FreeRTOS include files 
+#include "FreeRTOS.h" 
+#include "task.h" 
+#include "croutine.h" 
+#include "usart_ATmega1284.h"
+//#include "timer.h"
+
+// void set_PWM(double frequency) {
+// 	static double current_frequency; // Keeps track of the currently set frequency
+// 	// Will only update the registers when the frequency changes, otherwise allows
+// 	// music to play uninterrupted.
+// 	if (frequency != current_frequency) {
+// 		if (!frequency) { TCCR3B &= 0x08; } //stops timer/counter
+// 		else { TCCR3B |= 0x03; } // resumes/continues timer/counter
+// 		
+// 		// prevents OCR3A from overflowing, using prescaler 64
+// 		// 0.954 is smallest frequency that will not result in overflow
+// 		if (frequency < 0.954) { OCR3A = 0xFFFF; }
+// 		
+// 		// prevents OCR0A from underflowing, using prescaler 64					// 31250 is largest frequency that will not result in underflow
+// 		else if (frequency > 31250) { OCR3A = 0x0000; }
+// 		
+// 		// set OCR3A based on desired frequency
+// 		else { OCR3A = (short)(8000000 / (128 * frequency)) - 1; }
+// 
+// 		TCNT3 = 0; // resets counter
+// 		current_frequency = frequency; // Updates the current frequency
+// 	}
+// }
+// 
+// void PWM_on() {
+// 	TCCR3A = (1 << COM3A0);
+// 	// COM3A0: Toggle PB3 on compare match between counter and OCR0A
+// 	TCCR3B = (1 << WGM32) | (1 << CS31) | (1 << CS30);
+// 	// WGM02: When counter (TCNT0) matches OCR0A, reset counter
+// 	// CS01 & CS30: Set a prescaler of 64
+// 	set_PWM(0);
+// }
+// 
+// void PWM_off() {
+// 	TCCR3A = 0x00;
+// 	TCCR3B = 0x00;
+// }
+
+
+enum LEDState {INIT,Wait,ON_SEND,OFF_SEND} LED_state;
+enum RTOSSTate {INIT2} RTOS_state;
+enum TimerState{INIT3} Timer_state;
+
+
+
+void A2D_init() {
+	ADCSRA |= (1 << ADEN) | (1 << ADSC) | (1 << ADATE);
+}
+
+void ADC_read() {
+	ADCSRA |= (1<<ADSC);
+	while(!(ADCSRA & (1<<ADIF)));
+}
+
+void LEDS_Init(){
+	LED_state = INIT;
+}
+
+void RTOS_Init() {
+	RTOS_state = INIT2;
+}
+
+void LEDS_Tick(){
+	//Actions
+	switch(LED_state) {																						//actions
+		case INIT:
+			break;
+		case Wait:
+			//PORTC = 0x00;
+			if (USART_HasReceived(0)) {
+				receive = USART_Receive(0);
+			}
+			break;
+		case ON_SEND:
+			PORTC = 0x01;
+			//counts++;
+			receive = USART_Receive(0);
+			if (USART_IsSendReady(0)) {
+				USART_Send(0x01, 0);
+			}
+			USART_Flush(0);
+			break;
+		
+		case OFF_SEND:
+			PORTC = 0x01;
+			//counts++;
+			receive = USART_Receive(0);
+			if (USART_IsSendReady(0)) {
+				USART_Send(0x00, 0);
+			}
+			USART_Flush(0);
+			break;
+		}
+	
+	switch(LED_state) {																						//transitions
+		case INIT:
+			LED_state = Wait;
+			break;
+		case Wait:
+			if (USART_HasReceived(0)) {
+				if (receive == 0x01) {
+					LED_state = ON_SEND;
+//					counts = 0;
+				}
+				else if (receive == 0x00) {
+					LED_state = OFF_SEND;
+//					counts = 0;
+				}
+				else {
+					LED_state = Wait;
+				}
+			}
+			else {
+				LED_state = Wait;
+			}
+			break;
+		case ON_SEND:
+			if (receive == 0x01) {// && counts < 3000) {
+				LED_state = ON_SEND;
+			}
+			else {
+				LED_state = Wait;
+				
+			}
+			break;
+		case OFF_SEND:
+			if (receive == 0x00) {// && counts < 3000) {
+				LED_state = OFF_SEND;
+			}
+			else {
+				LED_state = Wait;
+			}
+// 			else {
+// 				LED_state = Wait;
+// 			}
+// 			//			}
+			break;
+		}
+}
+
+void RTOS_Tick() {
+	switch(RTOS_state) {
+		case INIT2:
+			break;
+	}
+	switch(RTOS_state) {
+		case INIT2:
+		ADC_read();
+		force = ADC;
+		if (force < 250) {
+			PORTB = 0x01;
+		}
+		else if (force >= 250 && force < 400) {
+			PORTB = 0x02;
+		}
+		else if (force >= 400 && force < 450) {
+			PORTB = 0x04;
+		}
+		else if (force >= 450 && force < 500) {
+			PORTB = 0x08;
+		}
+		else if (force >= 500 && force < 550) {
+			PORTB = 0x10;
+		}
+		else if (force >= 550 && force < 600) {
+			PORTB = 0x20;
+		}
+		else if (force >= 600 && force <= 650) {
+			PORTB = 0x40;
+		}
+		else {
+			PORTB = 0xFF;
+		}
+	}
+}
+
+void Timer() {
+	switch(Timer_state) {
+		case INIT3:
+			break;
+		
+	}
+	switch(Timer_state) {
+		case INIT3:
+			if (PORTC == 0x01) {
+				PORTC = 0x00;
+			}
+	}
+}
+
+void LedSecTask()
+{
+	LEDS_Init();
+   for(;;) 
+   { 	
+	LEDS_Tick();
+	vTaskDelay(100); 
+   } 
+}
+
+void LedSecTask2()
+{
+	RTOS_Init();
+	for(;;)
+	{
+		RTOS_Tick();
+		vTaskDelay(100);
+	}
+}
+
+void LedSecTask3()
+{
+	RTOS_Init();
+	for(;;)
+	{
+		Timer();
+		vTaskDelay(5000);
+	}
+}
+
+
+void StartSecPulse(unsigned portBASE_TYPE Priority)
+{
+	xTaskCreate(LedSecTask, (signed portCHAR *)"LedSecTask", configMINIMAL_STACK_SIZE, NULL, Priority, NULL );
+}	
+void StartSecPulse2(unsigned portBASE_TYPE Priority)
+{
+	xTaskCreate(LedSecTask2, (signed portCHAR *)"LedSecTask2", configMINIMAL_STACK_SIZE, NULL, Priority, NULL );
+}
+void StartSecPulse3(unsigned portBASE_TYPE Priority)
+{
+	xTaskCreate(LedSecTask3, (signed portCHAR *)"LedSecTask3", configMINIMAL_STACK_SIZE, NULL, Priority, NULL );
+}
+ 
+int main(void) 
+{ 
+	//PWM_on();
+	DDRA = 0x00; PORTA = 0xFF;
+   DDRC = 0xFF; PORTC = 0x00;
+   DDRB = 0xFF; PORTB = 0x00;
+   initUSART(0);
+   A2D_init();
+   //Start Tasks  
+   StartSecPulse(1);
+   StartSecPulse2(1);
+   StartSecPulse3(1);
+    //RunSchedular 
+   vTaskStartScheduler();
+   return 0; 
+}
